@@ -177,12 +177,27 @@ def encode_pil_to_bytes(pil_image, format="png"):
         return output_bytes.getvalue()
 
 
+import hashlib
+from pathlib import Path
+import os
+
 def hash_file(file_path: str | Path, chunk_num_blocks: int = 128) -> str:
+    file_path = Path(file_path)
     sha = hashlib.sha256()
-    with open(file_path, "rb") as f:
-        for chunk in iter(lambda: f.read(chunk_num_blocks * sha.block_size), b""):
-            sha.update(chunk)
-    return sha.hexdigest()
+    
+    try:
+        if not file_path.is_file():
+            raise ValueError(f"The path '{file_path}' is not a file or does not exist.")
+        
+        with open(file_path, "rb") as f:
+            for chunk in iter(lambda: f.read(chunk_num_blocks * sha.block_size), b""):
+                sha.update(chunk)
+        return sha.hexdigest()
+    except PermissionError:
+        raise PermissionError(f"Permission denied when trying to access '{file_path}'. "
+                              f"Check if you have the necessary permissions.")
+    except Exception as e:
+        raise RuntimeError(f"An error occurred while hashing the file: {e}")
 
 
 def hash_url(url: str) -> str:
