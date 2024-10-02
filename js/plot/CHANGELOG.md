@@ -1,5 +1,12 @@
 # @gradio/plot
 
+## 0.7.0-beta.4
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.3
+- @gradio/atoms@0.9.0-beta.3
+
 ## 0.7.0-beta.3
 
 ### Features
